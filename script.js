@@ -1,28 +1,53 @@
-
 const canvas = document.getElementById("sketch-canvas");
 const ctx = canvas.getContext("2d");
+
 let painting = false;
 
-canvas.addEventListener("mousedown", () => painting = true);
-canvas.addEventListener("mouseup", () => painting = false);
-canvas.addEventListener("mouseleave", () => painting = false);
-canvas.addEventListener("mousemove", draw);
-
-function draw(e) {
-    if (!painting) return;
-    const rect = canvas.getBoundingClientRect();
-    ctx.lineWidth = 2;
-    ctx.lineCap = "round";
-    ctx.strokeStyle = "#000";
-    ctx.lineTo(e.clientX - rect.left, e.clientY - rect.top);
-    ctx.stroke();
-    ctx.beginPath();
-    ctx.moveTo(e.clientX - rect.left, e.clientY - rect.top);
+function startPosition(e) {
+  painting = true;
+  draw(e); // start with dot
 }
 
-document.getElementById("clearCanvas").addEventListener("click", () => {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-});
+function endPosition() {
+  painting = false;
+  ctx.beginPath();
+}
+
+function draw(e) {
+  if (!painting) return;
+
+  e.preventDefault(); // prevent scrolling while drawing
+
+  const rect = canvas.getBoundingClientRect();
+  let x, y;
+
+  if (e.touches) {
+    x = e.touches[0].clientX - rect.left;
+    y = e.touches[0].clientY - rect.top;
+  } else {
+    x = e.clientX - rect.left;
+    y = e.clientY - rect.top;
+  }
+
+  ctx.lineWidth = 2;
+  ctx.lineCap = "round";
+  ctx.strokeStyle = "#000";
+
+  ctx.lineTo(x, y);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(x, y);
+}
+
+// Mouse Events
+canvas.addEventListener("mousedown", startPosition);
+canvas.addEventListener("mouseup", endPosition);
+canvas.addEventListener("mousemove", draw);
+
+// Touch Events
+canvas.addEventListener("touchstart", startPosition);
+canvas.addEventListener("touchend", endPosition);
+canvas.addEventListener("touchmove", draw);
 
 
 //download png
