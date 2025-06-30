@@ -9,7 +9,7 @@ body {
   padding: 20px;
 }
 .container {
-  max-width: 900px;
+  max-width: 1000px;
   margin: auto;
 }
 h1, h2 {
@@ -30,7 +30,13 @@ form {
   flex-wrap: wrap;
   gap: 30px;
 }
-.column {
+.measurements {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  flex: 2;
+  gap: 10px;
+}
+.keterangan {
   flex: 1;
   min-width: 280px;
 }
@@ -40,17 +46,22 @@ label {
   margin-bottom: 10px;
   font-weight: 500;
 }
-input {
+input, textarea {
   padding: 8px;
   border: 1px solid #ccc;
   border-radius: 6px;
   font-size: 14px;
+}
+textarea {
+  resize: vertical;
+  height: 100%;
 }
 canvas {
   display: block;
   margin: 20px auto;
   border: 1px solid #ccc;
   background-color: #fff;
+  touch-action: none;
 }
 button {
   margin: 10px;
