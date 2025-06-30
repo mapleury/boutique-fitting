@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fashion Fitting App</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Fashion Designer Fitting App</h1>
+    
+    <form id="fitting-form">
+      <div class="section">
+        <label>Name: <input type="text" id="name"></label>
+        <label>Date: <input type="date" id="date"></label>
+        <label>Phone Number: <input type="tel" id="phone"></label>
+      </div>
+      
+      <div class="columns">
+        <div class="column">
+          <label>Lingkar Leher: <input type="text" id="leher"></label>
+          <label>Lingkar Badan: <input type="text" id="badan"></label>
+          <label>Lingkar Pinggang: <input type="text" id="pinggang"></label>
+          <label>Lebar Muka: <input type="text" id="muka"></label>
+          <label>Lebar Punggung: <input type="text" id="punggung"></label>
+          <label>Panjang Punggung: <input type="text" id="panjangPunggung"></label>
+          <label>Panjang Bahu: <input type="text" id="bahu"></label>
+          <label>Tinggi/Jarak Dada: <input type="text" id="tinggiDada"></label>
+          <label>LKL: <input type="text" id="lkl"></label>
+          <label>Tinggi Siku-Siku/Lingkar Siku: <input type="text" id="siku"></label>
+          <label>Panjang Tangan/L.BW: <input type="text" id="tangan"></label>
+          <label>Tinggi Panggul: <input type="text" id="tinggiPanggul"></label>
+          <label>Lingkar Panggul: <input type="text" id="lingkarPanggul"></label>
+          <label>Panjang Blus: <input type="text" id="blus"></label>
+          <label>Tinggi Lutut: <input type="text" id="tinggiLutut"></label>
+          <label>Panjang Rok/Celana: <input type="text" id="rokCelana"></label>
+          <label>Lingkar Paha: <input type="text" id="paha"></label>
+          <label>Tinggi Duduk: <input type="text" id="tinggiDuduk"></label>
+          <label>Lingkar Lutut: <input type="text" id="lutut"></label>
+          <label>Lingkar Kaki: <input type="text" id="kaki"></label>
+        </div>
+        <div class="column">
+          <label>Detail 1: <input type="text"></label>
+          <label>Detail 2: <input type="text"></label>
+          <label>Detail 3: <input type="text"></label>
+          <label>Detail 4: <input type="text"></label>
+          <label>Detail 5: <input type="text"></label>
+          <label>Detail 6: <input type="text"></label>
+          <label>Detail 7: <input type="text"></label>
+          <label>Detail 8: <input type="text"></label>
+          <label>Detail 9: <input type="text"></label>
+          <label>Detail 10: <input type="text"></label>
+          <label>Detail 11: <input type="text"></label>
+          <label>Detail 12: <input type="text"></label>
+          <label>Detail 13: <input type="text"></label>
+          <label>Detail 14: <input type="text"></label>
+          <label>Detail 15: <input type="text"></label>
+          <label>Detail 16: <input type="text"></label>
+          <label>Detail 17: <input type="text"></label>
+          <label>Detail 18: <input type="text"></label>
+          <label>Detail 19: <input type="text"></label>
+          <label>Detail 20: <input type="text"></label>
+        </div>
+      </div>
+
+      <div class="section">
+        <label>Fitting: <input type="text" id="fitting"></label>
+        <label>Selesai: <input type="text" id="selesai"></label>
+      </div>
+    </form>
+
+    <h2>Sketch Area</h2>
+    <canvas id="sketch-canvas" width="400" height="400"></canvas><br>
+   <button id="clearCanvas">Clear Sketch</button>
+<button id="downloadPng">Download PNG</button>
+
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="script.js"></script>
+
+</body>
+</html>
