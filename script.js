@@ -1,98 +1,89 @@
 const canvas = document.getElementById("sketch-canvas");
 const ctx = canvas.getContext("2d");
-
 let painting = false;
 
-function startPosition(e) {
-  painting = true;
-  draw(e); // start with dot
+function getXY(e) {
+  const rect = canvas.getBoundingClientRect();
+  return e.touches
+    ? [e.touches[0].clientX - rect.left, e.touches[0].clientY - rect.top]
+    : [e.clientX - rect.left, e.clientY - rect.top];
 }
 
-function endPosition() {
-  painting = false;
+function startDrawing(e) {
+  painting = true;
+  const [x, y] = getXY(e);
   ctx.beginPath();
+  ctx.moveTo(x, y);
+  e.preventDefault();
 }
 
 function draw(e) {
   if (!painting) return;
-
-  e.preventDefault(); // prevent scrolling while drawing
-
-  const rect = canvas.getBoundingClientRect();
-  let x, y;
-
-  if (e.touches) {
-    x = e.touches[0].clientX - rect.left;
-    y = e.touches[0].clientY - rect.top;
-  } else {
-    x = e.clientX - rect.left;
-    y = e.clientY - rect.top;
-  }
-
+  const [x, y] = getXY(e);
   ctx.lineWidth = 2;
   ctx.lineCap = "round";
   ctx.strokeStyle = "#000";
-
   ctx.lineTo(x, y);
   ctx.stroke();
-  ctx.beginPath();
-  ctx.moveTo(x, y);
+  e.preventDefault();
 }
 
-// Mouse Events
-canvas.addEventListener("mousedown", startPosition);
-canvas.addEventListener("mouseup", endPosition);
+function stopDrawing() {
+  painting = false;
+  ctx.beginPath();
+}
+
+// Drawing events
+canvas.addEventListener("mousedown", startDrawing);
+canvas.addEventListener("mouseup", stopDrawing);
 canvas.addEventListener("mousemove", draw);
+canvas.addEventListener("mouseleave", stopDrawing);
 
-// Touch Events
-canvas.addEventListener("touchstart", startPosition);
-canvas.addEventListener("touchend", endPosition);
-canvas.addEventListener("touchmove", draw);
+canvas.addEventListener("touchstart", startDrawing, { passive: false });
+canvas.addEventListener("touchend", stopDrawing, { passive: false });
+canvas.addEventListener("touchmove", draw, { passive: false });
 
+// Clear button
+document.getElementById("clearCanvas").addEventListener("click", () => {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+});
 
-//download png
+// Download PNG with form data
 document.getElementById("downloadPng").addEventListener("click", () => {
-  const sketchCanvas = document.getElementById("sketch-canvas");
+  const formInputs = Array.from(document.querySelectorAll("input[type='text'], input[type='tel'], input[type='date']"))
+    .filter(input => input.value.trim() !== "")
+    .map(input => {
+      const label = input.closest("label");
+      const text = label ? label.firstChild.textContent.trim() : "Field";
+      return `${text}: ${input.value}`;
+    });
 
-  // Prepare text inputs (excluding empty ones)
-  const inputs = Array.from(document.querySelectorAll("input[type='text']")).filter(i => i.value.trim() !== "");
-  const itemsPerColumn = Math.ceil(inputs.length / 2);
-
+  const itemsPerColumn = Math.ceil(formInputs.length / 2);
   const rowHeight = 30;
-  const canvasPadding = 20;
+  const padding = 20;
   const columnSpacing = 300;
   const sketchHeight = 420;
   const width = 800;
-  const height = (itemsPerColumn * rowHeight + canvasPadding * 2 + sketchHeight + 40);
+  const height = (itemsPerColumn * rowHeight + padding * 2 + sketchHeight + 40);
 
-  // Create temporary canvas
   const tempCanvas = document.createElement("canvas");
   tempCanvas.width = width;
   tempCanvas.height = height;
-  const ctx = tempCanvas.getContext("2d");
+  const tempCtx = tempCanvas.getContext("2d");
 
-  // Background
-  ctx.fillStyle = "#fff";
-  ctx.fillRect(0, 0, width, height);
+  tempCtx.fillStyle = "#fff";
+  tempCtx.fillRect(0, 0, width, height);
+  tempCtx.fillStyle = "#222";
+  tempCtx.font = "bold 20px 'Segoe UI'";
+  tempCtx.fillText("Fitting Data Summary", padding, 30);
 
-  // Title
-  ctx.fillStyle = "#222";
-  ctx.font = "bold 20px 'Segoe UI', sans-serif";
-  ctx.fillText("Fitting Data Summary", canvasPadding, 30);
-
-  // Draw form inputs in two columns
-  ctx.font = "15px 'Segoe UI', sans-serif";
-  ctx.fillStyle = "#000";
-  let xPos = canvasPadding;
+  tempCtx.fillStyle = "#000";
+  tempCtx.font = "15px 'Segoe UI'";
+  let xPos = padding;
   let yPos = 60;
 
-  inputs.forEach((input, index) => {
-    const label = input.closest("label");
-    const labelText = label ? label.firstChild.textContent.trim() : "Field";
-    const text = `${labelText}: ${input.value}`;
-
-    ctx.fillText(text, xPos, yPos);
-
+  formInputs.forEach((line, index) => {
+    tempCtx.fillText(line, xPos, yPos);
     if ((index + 1) % itemsPerColumn === 0) {
       xPos += columnSpacing;
       yPos = 60;
@@ -101,14 +92,12 @@ document.getElementById("downloadPng").addEventListener("click", () => {
     }
   });
 
-  // Add sketch canvas
-  ctx.drawImage(sketchCanvas, canvasPadding, yPos + 20, 400, 400);
-  ctx.strokeStyle = "#999";
-  ctx.strokeRect(canvasPadding, yPos + 20, 400, 400);
-  ctx.font = "italic 14px 'Segoe UI', sans-serif";
-  ctx.fillText("Model", canvasPadding, yPos + 18);
+  tempCtx.drawImage(canvas, padding, yPos + 20, 400, 400);
+  tempCtx.strokeStyle = "#aaa";
+  tempCtx.strokeRect(padding, yPos + 20, 400, 400);
+  tempCtx.font = "italic 14px 'Segoe UI'";
+  tempCtx.fillText("Sketch", padding, yPos + 18);
 
-  // Download
   const link = document.createElement("a");
   link.download = "fitting_data.png";
   link.href = tempCanvas.toDataURL("image/png");
